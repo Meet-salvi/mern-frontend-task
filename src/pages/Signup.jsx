@@ -19,11 +19,14 @@ export default function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const API = import.meta.env.VITE_API_URL;
+
     try {
-      const res = await axios.post(
-        "http://localhost:8000/api/auth/register",
-        formData
-      );
+      const res = await axios.post(`${API}/api/auth/register`, formData, {
+        withCredentials: true, // keep if you're using cookies/auth
+      });
+
+      console.log(res);
 
       toast.success(res.data.message || "Registered Successfully");
 
@@ -34,7 +37,7 @@ export default function Signup() {
 
       //Redirect after signup
       setTimeout(() => {
-        navigate("/product");
+        navigate("/");
       }, 1000);
     } catch (err) {
       toast.error(err.response?.data?.message || "Registration Failed");

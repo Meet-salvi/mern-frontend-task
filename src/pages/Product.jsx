@@ -16,10 +16,13 @@ export default function Products() {
 
   const token = localStorage.getItem("token");
 
+  const API = import.meta.env.VITE_API_URL;
+
   const fetchProducts = async () => {
     try {
-      const res = await fetch("http://localhost:8000/api/products", {
+      const res = await fetch(`${API}/api/products`, {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
+        credentials: "include", // keep this if you use cookies
       });
 
       if (res.status === 401 || res.status === 403) {
@@ -30,6 +33,7 @@ export default function Products() {
       }
 
       const data = await res.json();
+      console.log(data)
       setProducts(data.products || data);
     } catch {
       toast.error("Failed to fetch products");
@@ -45,8 +49,8 @@ export default function Products() {
 
     const method = editSlug ? "PUT" : "POST";
     const url = editSlug
-      ? `http://localhost:8000/api/products/${editSlug}`
-      : "http://localhost:8000/api/products";
+      ? `${API}/api/products/${editSlug}`
+      : `${API}/api/products`;
 
     try {
       const res = await fetch(url, {
@@ -56,6 +60,7 @@ export default function Products() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(form),
+        credentials: "include",
       });
 
       const data = await res.json();
@@ -97,11 +102,12 @@ export default function Products() {
     if (!window.confirm("Delete product?")) return;
 
     try {
-      const res = await fetch(`http://localhost:8000/api/products/${slug}`, {
+      const res = await fetch(`${API}/products/${slug}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        credentials: "include",
       });
 
       const data = await res.json();
