@@ -102,7 +102,7 @@ export default function Products() {
     if (!window.confirm("Delete product?")) return;
 
     try {
-      const res = await fetch(`${API}/products/${slug}`, {
+      const res = await fetch(`${API}/api/products/${slug}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -123,6 +123,8 @@ export default function Products() {
       toast.error("Error deleting product");
     }
   };
+
+  console.log(handleDelete);
 
   return (
     <div className="container mt-4">
