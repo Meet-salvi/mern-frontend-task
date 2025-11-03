@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import jwtDecode from "jwt-decode";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
+  const [userName, setUserName] = useState("");
   const [form, setForm] = useState({
     title: "",
     price: "",
@@ -13,6 +16,7 @@ export default function Products() {
   });
 
   const [editSlug, setEditSlug] = useState(null);
+  const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
   const API = import.meta.env.VITE_API_URL;
@@ -122,9 +126,43 @@ export default function Products() {
     }
   };
 
+  // ✅ Get logged user name from token
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      navigate("/");
+      return;
+    }
+
+    try {
+      const decoded = jwtDecode(token);
+      setUserName(decoded.name || "User");
+    } catch (error) {
+      console.error("Token decode error", error);
+      navigate("/");
+    }
+  }, [navigate]);
+
+  // ✅ Logout handler
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/");
+  };
+
   return (
     <div className="container mt-4">
       <ToastContainer />
+
+      {/* ✅ Top Header with User + Logout */}
+      <div className="d-flex justify-content-between align-items-center mb-4 p-3 shadow-sm bg-white rounded">
+        <h5 className="mb-0">
+          👋 Welcome, <span className="text-success fw-bold">{userName}</span>
+        </h5>
+        <button className="btn btn-danger btn-sm" onClick={handleLogout}>
+          Logout
+        </button>
+      </div>
 
       <div className="card p-3 mb-4 shadow-sm">
         <h3 className="mb-3">{editSlug ? "Update Product" : "Add Product"}</h3>
