@@ -91,6 +91,8 @@ export default function Signup() {
 
             <button className="btn btn-success w-100">Sign Up</button>
 
+            <p className="text-center mt-3">Already have an account?</p>
+
             <button
               type="button"
               className="btn btn-primary w-100 mt-2"
