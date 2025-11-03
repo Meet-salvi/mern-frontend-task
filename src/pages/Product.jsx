@@ -158,7 +158,9 @@ export default function Products() {
               className="form-control"
               rows="2"
               value={form.description}
-              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              onChange={(e) =>
+                setForm({ ...form, description: e.target.value })
+              }
             />
           </div>
 
@@ -242,16 +244,17 @@ export default function Products() {
 
                 <td>
                   <button
-                    className="btn btn-primary btn-sm me-2"
+                    className="btn btn-outline-primary btn-sm me-2"
                     onClick={() => handleEdit(p)}
                   >
-                    Edit
+                    <i className="bi bi-pencil-square"></i>
                   </button>
+
                   <button
-                    className="btn btn-danger btn-sm"
+                    className="btn btn-outline-danger btn-sm"
                     onClick={() => handleDelete(p.slug)}
                   >
-                    Delete
+                    <i className="bi bi-trash"></i>
                   </button>
                 </td>
               </tr>
