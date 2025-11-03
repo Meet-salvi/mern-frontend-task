@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Signup() {
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -44,6 +45,14 @@ export default function Signup() {
     }
   };
 
+  {
+    formData.password.length > 0 && formData.password.length < 6 && (
+      <small className="text-danger">
+        Password must be at least 6 characters
+      </small>
+    );
+  }
+
   return (
     <>
       <ToastContainer />
@@ -77,16 +86,26 @@ export default function Signup() {
               />
             </div>
 
-            <div className="mb-3">
+            <div className="mb-3 position-relative">
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 name="password"
                 placeholder="Password"
                 className="form-control"
                 value={formData.password}
                 onChange={handleChange}
                 required
+                minLength={6} // 6 digit validation
               />
+
+              {/* Eye Icon */}
+              <span
+                className="position-absolute top-50 end-0 translate-middle-y me-2"
+                style={{ cursor: "pointer" }}
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? "👁️" : "👁️‍🗨️"}
+              </span>
             </div>
 
             <button className="btn btn-success w-100">Sign Up</button>
