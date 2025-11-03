@@ -8,11 +8,18 @@ export default function Login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const API = import.meta.env.VITE_API_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // password validation
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      return;
+    }
 
     try {
       const res = await axios.post(
@@ -22,7 +29,7 @@ export default function Login() {
           password,
         },
         {
-          withCredentials: true, // if you are using cookies
+          withCredentials: true,
         }
       );
 
@@ -30,12 +37,10 @@ export default function Login() {
 
       toast.success(res.data.message || "Login Successful");
 
-      // Save token returned from backend
       if (res.data.accessToken) {
         localStorage.setItem("token", res.data.accessToken);
       }
 
-      //Redirect after success
       setTimeout(() => {
         navigate("/product");
       }, 1000);
@@ -64,18 +69,37 @@ export default function Login() {
               />
             </div>
 
-            <div className="mb-3">
+            <div className="mb-3 position-relative">
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="Password"
                 className="form-control"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
+
+              {/* Eye icon */}
+              <span
+                style={{
+                  cursor: "pointer",
+                  position: "absolute",
+                  right: "10px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                }}
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? "👁️" : "👁️‍🗨️"}
+              </span>
             </div>
 
-            <button className="btn btn-primary w-100">Login</button>
+            {/* Password error below field */}
+            {password.length > 0 && password.length < 6 && (
+              <small className="text-danger">Password must be at least 6 characters</small>
+            )}
+
+            <button className="btn btn-primary w-100 mt-2">Login</button>
 
             <p className="text-center mt-3">Don't have an account?</p>
 
