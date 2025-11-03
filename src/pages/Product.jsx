@@ -15,14 +15,13 @@ export default function Products() {
   const [editSlug, setEditSlug] = useState(null);
 
   const token = localStorage.getItem("token");
-
   const API = import.meta.env.VITE_API_URL;
 
   const fetchProducts = async () => {
     try {
       const res = await fetch(`${API}/api/products`, {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
-        credentials: "include", // keep this if you use cookies
+        credentials: "include",
       });
 
       if (res.status === 401 || res.status === 403) {
@@ -33,7 +32,6 @@ export default function Products() {
       }
 
       const data = await res.json();
-      console.log(data)
       setProducts(data.products || data);
     } catch {
       toast.error("Failed to fetch products");
@@ -124,16 +122,15 @@ export default function Products() {
     }
   };
 
-  console.log(handleDelete);
-
   return (
     <div className="container mt-4">
       <ToastContainer />
 
-      <div className="card p-3 mb-4">
-        <h3>{editSlug ? "Update Product" : "Add Product"}</h3>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-2">
+      <div className="card p-3 mb-4 shadow-sm">
+        <h3 className="mb-3">{editSlug ? "Update Product" : "Add Product"}</h3>
+
+        <form onSubmit={handleSubmit} className="row g-2">
+          <div className="col-12 col-md-6">
             <input
               type="text"
               placeholder="Title"
@@ -144,7 +141,7 @@ export default function Products() {
             />
           </div>
 
-          <div className="mb-2">
+          <div className="col-12 col-md-6">
             <input
               type="number"
               placeholder="Price"
@@ -155,18 +152,17 @@ export default function Products() {
             />
           </div>
 
-          <div className="mb-2">
+          <div className="col-12">
             <textarea
               placeholder="Description"
               className="form-control"
+              rows="2"
               value={form.description}
-              onChange={(e) =>
-                setForm({ ...form, description: e.target.value })
-              }
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
             />
           </div>
 
-          <div className="mb-2">
+          <div className="col-12 col-md-6">
             <input
               type="text"
               placeholder="Category"
@@ -177,7 +173,7 @@ export default function Products() {
             />
           </div>
 
-          <div className="mb-2">
+          <div className="col-12 col-md-6">
             <input
               type="text"
               placeholder="Paste Image URLs (comma separated)"
@@ -196,78 +192,81 @@ export default function Products() {
             />
           </div>
 
-          <button className="btn btn-success">
-            {editSlug ? "Update" : "Add"}
-          </button>
+          <div className="col-12 mt-2">
+            <button className="btn btn-success w-100">
+              {editSlug ? "Update" : "Add"}
+            </button>
+          </div>
         </form>
       </div>
 
-      <h3>Product List</h3>
-      <table className="table table-bordered table-hover">
-        <thead className="table-dark">
-          <tr>
-            <th>#</th>
-            <th>Title</th>
-            <th>Price</th>
-            <th>Description</th>
-            <th>Category</th>
-            <th>Image</th>
-            <th>Action</th>
-          </tr>
-        </thead>
+      <h3 className="mb-3">Product List</h3>
 
-        <tbody>
-          {products?.map((p, index) => (
-            <tr key={p.slug}>
-              <td>{index + 1}</td>
-              <td>{p.title}</td>
-              <td>₹{p.price}</td>
-              <td>{p.description}</td>
-
-              {/* ✅ Show Category */}
-              <td>{p.category}</td>
-
-              {/* ✅ Show only first image */}
-              <td>
-                {p.images?.length > 0 ? (
-                  <img
-                    src={p.images[0].url} // ✅ Access .url
-                    alt="product"
-                    width="50"
-                    height="50"
-                    style={{ objectFit: "cover", borderRadius: "5px" }}
-                  />
-                ) : (
-                  "No image"
-                )}
-              </td>
-
-              <td>
-                <button
-                  className="btn btn-primary btn-sm me-2"
-                  onClick={() => handleEdit(p)}
-                >
-                  Edit
-                </button>
-                <button
-                  className="btn btn-danger btn-sm"
-                  onClick={() => handleDelete(p.slug)}
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-
-          {products.length === 0 && (
+      {/* ✅ Responsive Table */}
+      <div className="table-responsive">
+        <table className="table table-bordered table-hover">
+          <thead className="table-dark">
             <tr>
-              <td colSpan="7" className="text-center">
-                No products found
-              </td>
+              <th>#</th>
+              <th>Title</th>
+              <th>Price</th>
+              <th>Description</th>
+              <th>Category</th>
+              <th>Image</th>
+              <th>Action</th>
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+
+          <tbody>
+            {products?.map((p, index) => (
+              <tr key={p.slug}>
+                <td>{index + 1}</td>
+                <td>{p.title}</td>
+                <td>₹{p.price}</td>
+                <td style={{ maxWidth: "200px" }}>{p.description}</td>
+                <td>{p.category}</td>
+
+                <td>
+                  {p.images?.length > 0 ? (
+                    <img
+                      src={p.images[0].url}
+                      alt="product"
+                      width="50"
+                      height="50"
+                      style={{ objectFit: "cover", borderRadius: "5px" }}
+                    />
+                  ) : (
+                    "No image"
+                  )}
+                </td>
+
+                <td>
+                  <button
+                    className="btn btn-primary btn-sm me-2"
+                    onClick={() => handleEdit(p)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="btn btn-danger btn-sm"
+                    onClick={() => handleDelete(p.slug)}
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+
+            {products.length === 0 && (
+              <tr>
+                <td colSpan="7" className="text-center">
+                  No products found
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
