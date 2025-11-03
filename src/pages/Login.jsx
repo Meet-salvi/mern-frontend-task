@@ -77,9 +77,15 @@ export default function Login() {
 
             <button className="btn btn-primary w-100">Login</button>
 
-            <p className="text-center mt-3">
-              Don't have an account? <a href="/signup">Sign Up</a>
-            </p>
+            <p className="text-center mt-3">Don't have an account?</p>
+
+            <button
+              type="button"
+              className="btn btn-success w-100 mt-2"
+              onClick={() => navigate("/signup")}
+            >
+              Create an Account
+            </button>
           </form>
         </div>
       </div>
